@@ -9,7 +9,7 @@ my $tx = new Business::OnlinePayment("StGeorge",
 
 $tx->content(
     login          => '10005432',
-    password       => 'cretphrase',
+    password       => 'certphrase',
     type           => 'CC',
     action         => 'Normal Authorization',
     description    => 'Business::OnlinePayment::LinkPoint visa test',

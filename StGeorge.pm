@@ -6,9 +6,10 @@ use Carp qw(croak);
 use Business::OnlinePayment;
 
 @ISA = qw(Business::OnlinePayment);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use webpayperl; #webpayperl.pm from St.George
+webpayperl::init_client or croak "St.George initialization failed\n";
 
 sub set_defaults {
     my $self = shift;
@@ -164,10 +165,6 @@ sub submit {
 
     # if ( $DEBUG ) { warn "$_ => $post{$_}\n" foreach keys %post; }
 
-    webpayperl::init_client or croak "St.George initialization failed\n";
-    #dd this to all exit places after here
-    #webpayperl::cleanup( $webpayRef );
-
     my $webpayRef = webpayperl::newBundle;
     webpayperl::addVersionInfo($webpayRef);
     webpayperl::put($webpayRef, "DEBUG", "OFF");
@@ -194,7 +191,6 @@ sub submit {
                           );
 
       webpayperl::cleanup( $webpayRef );
-      webpayperl::free_client();
       return;
     }
 
@@ -216,8 +212,11 @@ sub submit {
     }
  
     webpayperl::cleanup( $webpayRef );
-    webpayperl::free_client();
 
+}
+
+END {
+    webpayperl::free_client();
 }
 
 1;
